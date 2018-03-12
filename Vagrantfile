@@ -1,0 +1,186 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "centos/7"
+  
+  # name for `vagrant global-status`
+  config.vm.define "centos-7.4" do |t|
+  end
+  # name for VirtualBox
+  config.vm.provider "virtualbox" do |v|
+    v.name = "centos-7.4"
+  end
+  
+   config.vm.network :forwarded_port, guest: 80, host: 8000
+  
+  if Vagrant.has_plugin?("vagrant-timezone")
+    config.timezone.value = "UTC"
+  end
+   
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # NOTE: This will enable public access to the opened port
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+ # echo "WARNING!!! Need install vagrant plugin vagrant-vbguest for you OS!!!"
+    config.vm.synced_folder ".", "/project" , type: "virtualbox"  
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+   config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  
+  # We are going to give VM 1/4 system memory & access to all cpu cores on the  host
+  host = RbConfig::CONFIG['host_os']
+    if host =~ /darwin/
+      cpus = `sysctl -n hw.ncpu`.to_i
+      mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
+    elsif host =~ /linux/
+      cpus = `nproc`.to_i
+      mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
+    else
+      cpus = 2
+      mem = 1024
+    end
+    vb.customize ["modifyvm", :id, "--memory", mem]
+    vb.customize ["modifyvm", :id, "--cpus", cpus]
+    
+   end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+   config.vm.provision "shell", inline: <<-SHELL
+	  echo "Add Docker repository"
+	  sudo yum-config-manager add-repo https://download.docker.com/linux/centos/docker-ce.repo
+	  sudo yyum-config-manager --enable docker-ce.repo
+	  sudo yum-config-manager --enable docker-ce-edge
+	  yum list docker-ce --showduplicates | sort -r
+      sudo yum  update
+  #   apt-get install -y apache2
+
+   echo "ssh connection enable begin"
+      yum install augeas -y 
+      augtool --autosave 'set /files/etc/ssh/sshd_config/PasswordAuthentication yes'
+      sudo service sshd restart
+   echo "ssh connection enable end"
+ 
+  echo "NTP setting begin"
+	sudo yum install -y ntp
+	sudo systemctl start ntpd
+	sudo  systemctl enable ntpd
+	sudo  systemctl status ntpd
+	sudo rm -rf /etc/localtime
+	sudo ln -s /usr/share/zoneinfo/Europe/Kiev /etc/localtime
+  echo "NTP setting end"
+			  
+     # sudo yum install -y traceroute mc joe wget
+     sudo yum install -y  wget
+	 
+	 echo "Docker install begin"
+	  sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+      sudo yum install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm
+      sudo systemctl enable docker
+      sudo systemctl start docker
+      # sudo docker run hello-world
+      echo "sudo systemctl status docker"
+      sudo systemctl status docker
+	  echo "Docker install end"
+
+	sudo yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel asciidoc xmlto docbook2x 
+    sudo yum install -y  git 
+	cd /project
+	git clone https://github.com/r20171027/crm-seed.git 
+	cd crm-seed
+    git config user.name "r20171027"
+    git config user.email 20171027@i.ua
+    git status
+	echo "git clone https://github.com/r20171027/crm-seed.git finish"
+	#ls -l /project/* 
+	cd /project/crm-seed
+ 
+ echo "Installing Docker Compose"
+	sudo yum install -y  epel-release 
+	sudo yum install -y  python-pip 
+	
+	sudo pip install  docker-compose
+	sudo yum upgrade  -y python*
+	cd /project/crm-seed
+	# sudo docker-compose up -Deploy project in presentation mode
+    sudo docker-compose up 
+    docker --version
+	docker-compose --version	
+	
+  echo "sbt setting begin"
+    sudo mkdir  /var/lib/myrpm
+    sudo wget -cN http://dl.bintray.com/sbt/rpm/sbt-0.13.15.rpm -P /var/lib/myrpm
+    sudo yum install -y /var/lib/myrpm/sbt-0.13.15.rpm
+  echo "sbt setting end"
+
+   sudo yum install java-1.8.0-openjdk.x86_64 -y 
+   echo "---------------------------------------------------------------------------------------"
+   echo "Java -version:"
+   java -version
+   echo "---------------------------------------------------------------------------------------"
+
+   sudo cp /etc/profile /etc/profile_backup      #Backup the profile file in order to prevent unintentional mistakes
+   echo 'export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk' | sudo tee -a /etc/profile
+   echo 'export JRE_HOME=/usr/lib/jvm/jre' | sudo tee -a /etc/profile
+   source /etc/profile
+   echo "---------------------------------------------------------------------------------------"
+   echo "JAVA_HOME: "
+   echo $JAVA_HOME
+   echo "JRE_HOME:"
+   echo $JRE_HOME
+   echo "---------------------------------------------------------------------------------------"
+   cd /project/crm-seed
+   #sudo sbt compile  - compile project
+	
+	SHELL
+end
