@@ -1,0 +1,6 @@
+- name: ansible presentation project
+  hosts: localhost
+  tasks:
+ 
+  - name: ansible project presentation
+    shell: "cd /project/crm-seed; sudo docker-compose up"

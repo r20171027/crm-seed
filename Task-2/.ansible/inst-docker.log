@@ -1,0 +1,60 @@
+
+PLAY [Install docker and tools] ********************************************************************
+
+TASK [Gathering Facts] *****************************************************************************
+ok: [localhost]
+
+TASK [ansible create work directory "/tmp/myrpm"] **************************************************
+changed: [localhost]
+
+TASK [ansible install package wget] ****************************************************************
+changed: [localhost]
+
+TASK [ansible install package yum-utils] ***********************************************************
+ok: [localhost]
+
+TASK [ansible install package device-mapper-persistent-data] ***************************************
+ok: [localhost]
+
+TASK [ansible install package lvm2] ****************************************************************
+ok: [localhost]
+
+TASK [ansible download package docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm] ***********************
+changed: [localhost]
+
+TASK [ansible install package docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm] ************************
+changed: [localhost]
+
+TASK [ansible systemd service docker start as daemon] **********************************************
+changed: [localhost]
+
+TASK [ansible systemd service docker start] ********************************************************
+changed: [localhost]
+
+TASK [ansible install package epel-release] ********************************************************
+changed: [localhost]
+
+TASK [ansible install package python-pip] **********************************************************
+changed: [localhost]
+
+TASK [ansible install package docker-compose] ******************************************************
+changed: [localhost]
+
+TASK [ansible install package git] *****************************************************************
+changed: [localhost]
+
+TASK [ansible git clone] ***************************************************************************
+changed: [localhost]
+
+TASK [ansible download package sbt-0.13.15.rpm] ****************************************************
+changed: [localhost]
+
+TASK [ansible install package sbt-0.13.15.rpm] *****************************************************
+changed: [localhost]
+
+TASK [ansible install package java-1.8.0-openjdk.x86_64] *******************************************
+ok: [localhost]
+
+PLAY RECAP *****************************************************************************************
+localhost                  : ok=18   changed=13   unreachable=0    failed=0   
+

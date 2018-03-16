@@ -1,0 +1,6 @@
+- name: ansible crm Running
+  hosts: localhost
+  tasks:
+ 
+  - name: ansible crm Running
+    shell: "cd /project/crm-seed; sudo docker-compose -f docker-compose-dev.yml  up"

@@ -1,0 +1,7 @@
+---
+- name: compile project 
+  hosts: localhost
+  tasks:
+
+    - name: ansible compile project
+      shell: "cd /project/crm-seed; sudo sbt compile"

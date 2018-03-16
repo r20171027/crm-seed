@@ -1,0 +1,93 @@
+- name: Install docker and tools
+  hosts: localhost
+  vars:
+     my_folder: /tmp/myrpm
+     docker_url: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm
+     sbt_url: http://dl.bintray.com/sbt/rpm/sbt-0.13.15.rpm
+  tasks:
+  - name: ansible create work directory "{{my_folder}}"
+    file:
+      path: "{{my_folder}}"
+      state: directory
+
+  - name: ansible install package wget
+    yum:
+      name: wget
+      state: present
+
+  - name: ansible install package yum-utils
+    yum:
+      name: yum-utils
+      state: present
+      
+  - name: ansible install package device-mapper-persistent-data
+    yum:
+      name: device-mapper-persistent-data
+      state: present
+      
+  - name: ansible install package lvm2
+    yum:
+      name: lvm2
+      state: present
+      
+  - name: ansible download package docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm
+    shell: "wget -cN {{docker_url}} -P {{my_folder}}"
+  
+  - name: ansible install package docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm
+    yum:
+      name: "{{my_folder}}/docker-ce-17.09.1.ce-1.el7.centos.x86_64.rpm"
+      state: present
+  
+  - name: ansible systemd service docker start as daemon
+    systemd:
+      name: docker
+      enabled: True
+             
+ 
+  - name: ansible systemd service docker start
+    systemd:
+      name: docker
+      state: started
+      daemon_reload: yes
+
+      
+  - name: ansible install package epel-release
+    yum:
+      name: epel-release
+      state: present
+      
+  - name: ansible install package python-pip
+    yum:
+      name: python-pip
+      state: present      
+      
+  - name: ansible install package docker-compose
+    pip:
+      name: docker-compose
+      
+  - name: ansible install package git
+    yum:
+      name: git
+      state: present      
+      
+  - name: ansible git clone
+    git: 
+       repo: 'https://github.com/r20171027/crm-seed.git'
+       dest: /project/crm-seed
+       clone: yes
+       update: yes
+    
+  - name: ansible download package sbt-0.13.15.rpm
+    shell: "wget -cN {{sbt_url}} -P {{my_folder}}"
+    
+  - name: ansible install package sbt-0.13.15.rpm
+    yum:
+      name: "{{my_folder}}/sbt-0.13.15.rpm"
+      state: present
+      
+  - name: ansible install package java-1.8.0-openjdk.x86_64
+    yum:
+      name: java-1.8.0-openjdk-headless
+      state: present
+
+ 

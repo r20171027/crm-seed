@@ -1,0 +1,7 @@
+---
+- name: Running tests
+  hosts: localhost
+  tasks:
+
+    - name: ansible  Running tests
+      shell: "cd /project/crm-seed; sbt test"
