@@ -1,4 +1,4 @@
-Install and configure Ansible AWX
+## Install and configure Ansible AWX
 
 Make folder test3 in project folder and copy to test3 playbooks, created in Task-2 .
 For install Ansible AWX use VM createrd from Vagrantfile.(add) 
@@ -55,13 +55,16 @@ As root, clone and deploy AWX to Docker containers via Ansible:
 Start browser with url http://127.0.0.1:8000
 
 INVENTORIES  > CREATE INVENTORY > my_inventory
+
 INVENTORIES  my_inventory   HOSTS >   test
 
 PROJECTS  > CREATE PROJECT > test_git (use playbooks on Git)
+
 Set the SCM Type Git
 Set the SCM URL Type https://github.com/r20171027/crm-seed.git
 
 PROJECTS  > CREATE PROJECT> test_local (use local playbook)
+
 Set the SCM Type Manual 
 and select test3
 
