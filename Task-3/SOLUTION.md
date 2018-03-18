@@ -1,32 +1,33 @@
-## Install and configure Ansible AWX
+# Install and configure Ansible AWX
 
 Make folder test3 in project folder and copy to test3 playbooks, created in Task-2 .
 For install Ansible AWX use VM createrd from Vagrantfile.(add) 
 
 in Vagrantfile:
-#   First update the OS:
+##   First update the OS:
      sudo yum -y update
 
-#    Install requisite base packages:
+##   Install requisite base packages:
       sudo yum -y install bzip2 device-mapper-persistent-data gcc gcc-c++ git gettext lvm2 yum-utils
 
-#    Add the EPEL and Docker repositories:
+##    Add the EPEL and Docker repositories:
       sudo yum -y install epel-release
       sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
       sudo yum -y update
 
-#    Install Ansible and pip:
+##    Install Ansible and pip:
       sudo yum -y install ansible python-pip
 
-#    Set up Docker CE:
+##    Set up Docker CE:
        sudo yum -y install docker-ce
        sudo systemctl enable docker
        sudo systemctl start docker
 
-#    Install docker-py via pip:
+##    Install docker-py via pip:
       sudo pip install -U docker-py	
 
-start VM with command 'vagrant up --provision'
+## start VM with command 
+'vagrant up --provision'
 
 --------------------------------------------------------------------------------------
 On console VM:
