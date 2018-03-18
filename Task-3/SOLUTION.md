@@ -1,4 +1,5 @@
 Install and configure Ansible AWX
+
 Make folder test3 in project folder and copy to test3 playbooks, created in Task-2 .
 For install Ansible AWX use VM createrd from Vagrantfile.(add) 
 
@@ -72,9 +73,7 @@ use project test_git  for use playbooks from Git or project test_local  for use 
  
 
 
-
-
-
+***************************************************
 
 inst-docker.yml -  Ansible install docker and tools
 crm-present.yml - Ansible  presentation project
